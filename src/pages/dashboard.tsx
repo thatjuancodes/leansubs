@@ -1,10 +1,37 @@
 import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge } from '@chakra-ui/react'
 import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { memberService } from '@/services/member.service'
 
 export function DashboardPage() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    expired: 0,
+    cancelled: 0,
+    paused: 0,
+  })
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadStats() {
+      if (!user) return
+      
+      try {
+        const memberStats = await memberService.getStats(user.id)
+        setStats(memberStats)
+      } catch (error) {
+        console.error('Failed to load stats:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadStats()
+  }, [user])
 
   async function handleLogout() {
     try {
@@ -95,62 +122,163 @@ export function DashboardPage() {
           {/* Stats Grid */}
           <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
             <StatCard
-              title="Active Subscriptions"
-              value="0"
-              badge="No data yet"
-              badgeColor="accent.500"
-            />
-
-            <StatCard
-              title="Total Sessions"
-              value="0"
-              badge="No data yet"
-              badgeColor="accent.500"
-            />
-
-            <StatCard
               title="Active Members"
-              value="0"
-              badge="No data yet"
-              badgeColor="accent.500"
+              value={isLoading ? '...' : stats.active.toString()}
+              badge={stats.active > 0 ? 'Active subscriptions' : 'No active members'}
+              badgeColor={stats.active > 0 ? 'success.500' : 'accent.500'}
+            />
+
+            <StatCard
+              title="Total Members"
+              value={isLoading ? '...' : stats.total.toString()}
+              badge={`${stats.expired} expired, ${stats.cancelled} cancelled`}
+              badgeColor="brand.400"
+            />
+
+            <StatCard
+              title="Paused Members"
+              value={isLoading ? '...' : stats.paused.toString()}
+              badge={stats.paused > 0 ? 'Temporarily paused' : 'None paused'}
+              badgeColor={stats.paused > 0 ? 'warning.300' : 'accent.500'}
             />
           </SimpleGrid>
 
-          {/* Coming Soon Message */}
-          <Box
-            bg="white"
-            _dark={{ bg: "accent.800" }}
-            p={8}
-            borderRadius="md"
-            border="subtle"
-            shadow="base"
-            textAlign="center"
-          >
-            <Stack gap={4}>
-              <Text fontSize="4xl">🚀</Text>
+          {/* Quick Actions */}
+          <Stack gap={4}>
+            <Heading
+              fontSize="xl"
+              fontWeight="600"
+              fontFamily="heading"
+              color="accent.800"
+              _dark={{ color: "accent.100" }}
+            >
+              Quick Actions
+            </Heading>
 
-              <Heading
-                fontSize="2xl"
-                fontWeight="600"
-                fontFamily="heading"
-                color="accent.800"
-                _dark={{ color: "accent.100" }}
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
+              <Button
+                onClick={() => navigate('/members/add')}
+                bg="white"
+                _dark={{ bg: "accent.800" }}
+                border="subtle"
+                shadow="base"
+                h="auto"
+                p={6}
+                borderRadius="md"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "lg",
+                  borderColor: "brand.400"
+                }}
+                transition="all 0.2s ease-in-out"
               >
-                Dashboard Coming Soon
-              </Heading>
+                <Stack gap={3} align="flex-start" w="full">
+                  <Text fontSize="2xl">➕</Text>
 
-              <Text
-                color="accent.600"
-                _dark={{ color: "accent.400" }}
-                fontFamily="body"
-                maxW="2xl"
-                mx="auto"
+                  <Stack gap={1} align="flex-start">
+                    <Text
+                      fontSize="md"
+                      fontWeight="600"
+                      fontFamily="heading"
+                      color="accent.800"
+                      _dark={{ color: "accent.100" }}
+                    >
+                      Add Member
+                    </Text>
+
+                    <Text
+                      fontSize="sm"
+                      color="accent.600"
+                      _dark={{ color: "accent.400" }}
+                      fontFamily="body"
+                      textAlign="left"
+                    >
+                      Create a new member record
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Button>
+
+              <Button
+                onClick={() => navigate('/members')}
+                bg="white"
+                _dark={{ bg: "accent.800" }}
+                border="subtle"
+                shadow="base"
+                h="auto"
+                p={6}
+                borderRadius="md"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "lg",
+                  borderColor: "brand.400"
+                }}
+                transition="all 0.2s ease-in-out"
               >
-                Your subscription management dashboard is being built. Soon you'll be able to track subscriptions, 
-                manage sessions, and monitor member progress all from here.
-              </Text>
-            </Stack>
-          </Box>
+                <Stack gap={3} align="flex-start" w="full">
+                  <Text fontSize="2xl">📊</Text>
+
+                  <Stack gap={1} align="flex-start">
+                    <Text
+                      fontSize="md"
+                      fontWeight="600"
+                      fontFamily="heading"
+                      color="accent.800"
+                      _dark={{ color: "accent.100" }}
+                    >
+                      View Members
+                    </Text>
+
+                    <Text
+                      fontSize="sm"
+                      color="accent.600"
+                      _dark={{ color: "accent.400" }}
+                      fontFamily="body"
+                      textAlign="left"
+                    >
+                      See all member records
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Button>
+
+              <Box
+                bg="white"
+                _dark={{ bg: "accent.800" }}
+                border="subtle"
+                shadow="base"
+                p={6}
+                borderRadius="md"
+                opacity={0.6}
+                cursor="not-allowed"
+              >
+                <Stack gap={3} align="flex-start">
+                  <Text fontSize="2xl">📅</Text>
+
+                  <Stack gap={1} align="flex-start">
+                    <Text
+                      fontSize="md"
+                      fontWeight="600"
+                      fontFamily="heading"
+                      color="accent.800"
+                      _dark={{ color: "accent.100" }}
+                    >
+                      Track Sessions
+                    </Text>
+
+                    <Text
+                      fontSize="sm"
+                      color="accent.600"
+                      _dark={{ color: "accent.400" }}
+                      fontFamily="body"
+                    >
+                      Coming soon
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Box>
+            </SimpleGrid>
+          </Stack>
         </Stack>
       </Container>
     </Box>

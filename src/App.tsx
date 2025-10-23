@@ -3,6 +3,8 @@ import { LandingPage } from '@/components/landing-page'
 import { LoginPage } from '@/pages/login'
 import { RegisterPage } from '@/pages/register'
 import { DashboardPage } from '@/pages/dashboard'
+import { AddMemberPage } from '@/pages/add-member'
+import { MembersPage } from '@/pages/members'
 import { ProtectedRoute } from '@/components/protected-route'
 
 function App() {
@@ -17,6 +19,22 @@ function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/members" 
+          element={
+            <ProtectedRoute>
+              <MembersPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/members/add" 
+          element={
+            <ProtectedRoute>
+              <AddMemberPage />
             </ProtectedRoute>
           } 
         />
