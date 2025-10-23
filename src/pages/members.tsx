@@ -3,6 +3,7 @@ import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge, Input 
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { memberService } from '@/services/member.service'
+import { EditMemberDrawer } from '@/components/edit-member-drawer'
 import type { Member } from '@/types/member'
 
 export function MembersPage() {
@@ -11,6 +12,8 @@ export function MembersPage() {
   const [members, setMembers] = useState<Member[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
     loadMembers()
@@ -36,6 +39,20 @@ export function MembersPage() {
     } catch (error) {
       console.error('Logout failed:', error)
     }
+  }
+
+  function handleMemberClick(member: Member) {
+    setSelectedMember(member)
+    setIsDrawerOpen(true)
+  }
+
+  function handleDrawerClose() {
+    setIsDrawerOpen(false)
+    setSelectedMember(null)
+  }
+
+  function handleMemberUpdate() {
+    loadMembers() // Refresh the list
   }
 
   function getStatusColor(status: string): string {
@@ -364,7 +381,8 @@ export function MembersPage() {
                         key={member.id} 
                         member={member} 
                         getStatusColor={getStatusColor} 
-                        getStatusLabel={getStatusLabel} 
+                        getStatusLabel={getStatusLabel}
+                        onClick={() => handleMemberClick(member)}
                       />
                     ))}
                   </Box>
@@ -374,6 +392,14 @@ export function MembersPage() {
           )}
         </Stack>
       </Container>
+
+      {/* Edit Member Drawer */}
+      <EditMemberDrawer
+        member={selectedMember}
+        isOpen={isDrawerOpen}
+        onClose={handleDrawerClose}
+        onUpdate={handleMemberUpdate}
+      />
     </Box>
   )
 }
@@ -382,9 +408,10 @@ interface MemberRowProps {
   member: Member
   getStatusColor: (status: string) => string
   getStatusLabel: (status: string) => string
+  onClick: () => void
 }
 
-function MemberRow({ member, getStatusColor, getStatusLabel }: MemberRowProps) {
+function MemberRow({ member, getStatusColor, getStatusLabel, onClick }: MemberRowProps) {
   function formatMembershipType(type: string): string {
     return type.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
@@ -396,6 +423,8 @@ function MemberRow({ member, getStatusColor, getStatusLabel }: MemberRowProps) {
       as="tr"
       borderTop="subtle"
       transition="all 0.2s ease-in-out"
+      cursor="pointer"
+      onClick={onClick}
       _hover={{
         bg: "accent.50",
         _dark: { bg: "accent.900" }
