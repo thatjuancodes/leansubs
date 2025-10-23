@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Box, Heading, Text, Button, Stack, Input, SimpleGrid } from '@chakra-ui/react'
 import { memberService } from '@/services/member.service'
+import { DeleteMemberModal } from './delete-member-modal'
 import type { Member, MembershipType, MembershipStatus } from '@/types/member'
 
 interface EditMemberDrawerProps {
@@ -14,6 +15,7 @@ export function EditMemberDrawer({ member, isOpen, onClose, onUpdate }: EditMemb
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   // Form state
   const [fullName, setFullName] = useState('')
@@ -84,6 +86,20 @@ export function EditMemberDrawer({ member, isOpen, onClose, onUpdate }: EditMemb
   function handleClose() {
     setError('')
     setSuccess('')
+    onClose()
+  }
+
+  function handleDeleteClick() {
+    setIsDeleteModalOpen(true)
+  }
+
+  function handleDeleteModalClose() {
+    setIsDeleteModalOpen(false)
+  }
+
+  function handleDeleteSuccess() {
+    setIsDeleteModalOpen(false)
+    onUpdate()
     onClose()
   }
 
@@ -488,61 +504,101 @@ export function EditMemberDrawer({ member, isOpen, onClose, onUpdate }: EditMemb
                 </Stack>
 
                 {/* Action Buttons */}
-                <Stack direction="row" gap={3} pt={4}>
+                <Stack gap={3} pt={4}>
+                  {/* Delete Button */}
                   <Button
                     type="button"
                     variant="outline"
-                    borderColor="accent.200"
-                    color="accent.700"
+                    borderColor="danger.300"
+                    color="danger.600"
                     _hover={{ 
-                      bg: "accent.50",
-                      borderColor: "accent.400"
+                      bg: "danger.50",
+                      borderColor: "danger.500"
                     }}
                     _dark={{ 
-                      borderColor: "accent.700",
-                      color: "accent.300",
+                      borderColor: "danger.700",
+                      color: "danger.400",
                       _hover: { 
-                        bg: "accent.900",
-                        borderColor: "accent.500"
+                        bg: "danger.900",
+                        borderColor: "danger.500"
                       } 
                     }}
-                    onClick={handleClose}
+                    onClick={handleDeleteClick}
                     disabled={isLoading}
-                    flex={1}
+                    w="full"
                     px={4}
                     py={2}
                     borderRadius="md"
                     fontWeight="600"
                   >
-                    Cancel
+                    🗑️ Delete Member
                   </Button>
 
-                  <Button
-                    type="submit"
-                    backgroundColor="brand.400"
-                    color="white"
-                    _hover={{
-                      bg: "brand.500",
-                      transform: "translateY(-2px)",
-                      shadow: "lg"
-                    }}
-                    borderRadius="md"
-                    fontWeight="600"
-                    transition="all 0.2s ease-in-out"
-                    isLoading={isLoading}
-                    loadingText="Updating..."
-                    flex={1}
-                    px={4}
-                    py={2}
-                  >
-                    Update
-                  </Button>
+                  {/* Update/Cancel Buttons */}
+                  <Stack direction="row" gap={3}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      borderColor="accent.200"
+                      color="accent.700"
+                      _hover={{ 
+                        bg: "accent.50",
+                        borderColor: "accent.400"
+                      }}
+                      _dark={{ 
+                        borderColor: "accent.700",
+                        color: "accent.300",
+                        _hover: { 
+                          bg: "accent.900",
+                          borderColor: "accent.500"
+                        } 
+                      }}
+                      onClick={handleClose}
+                      disabled={isLoading}
+                      flex={1}
+                      px={4}
+                      py={2}
+                      borderRadius="md"
+                      fontWeight="600"
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      type="submit"
+                      backgroundColor="brand.400"
+                      color="white"
+                      _hover={{
+                        bg: "brand.500",
+                        transform: "translateY(-2px)",
+                        shadow: "lg"
+                      }}
+                      borderRadius="md"
+                      fontWeight="600"
+                      transition="all 0.2s ease-in-out"
+                      isLoading={isLoading}
+                      loadingText="Updating..."
+                      flex={1}
+                      px={4}
+                      py={2}
+                    >
+                      Update
+                    </Button>
+                  </Stack>
                 </Stack>
               </Stack>
             </Box>
           </Stack>
         </Box>
       </Box>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteMemberModal
+        member={member}
+        isOpen={isDeleteModalOpen}
+        onClose={handleDeleteModalClose}
+        onDelete={handleDeleteSuccess}
+      />
     </>
   )
 }
