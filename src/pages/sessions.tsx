@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { sessionService } from '@/services/session.service'
 import { EditSessionDrawer } from '@/components/edit-session-drawer'
+import { AppHeader } from '@/components/app-header'
 import type { SessionWithMember } from '@/types/session'
 
 export function SessionsPage() {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const [sessions, setSessions] = useState<SessionWithMember[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -30,15 +31,6 @@ export function SessionsPage() {
       console.error('Failed to load sessions:', error)
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  async function handleLogout() {
-    try {
-      await logout()
-      navigate('/login')
-    } catch (error) {
-      console.error('Logout failed:', error)
     }
   }
 
@@ -156,69 +148,7 @@ export function SessionsPage() {
 
   return (
     <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      {/* Header */}
-      <Box 
-        bg="white" 
-        _dark={{ bg: "accent.800" }} 
-        borderBottom="subtle"
-        py={4}
-      >
-        <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }}>
-          <Stack direction="row" justify="space-between" align="center">
-            <Heading
-              fontSize="2xl"
-              fontWeight="700"
-              bgGradient="to-r"
-              gradientFrom="brand.400"
-              gradientTo="secondary.500"
-              bgClip="text"
-              fontFamily="heading"
-              cursor="pointer"
-              onClick={() => navigate('/dashboard')}
-            >
-              LeanSubs
-            </Heading>
-
-            <Stack direction="row" gap={4} align="center">
-              <Text
-                fontSize="sm"
-                color="accent.600"
-                _dark={{ color: "accent.400" }}
-                fontFamily="body"
-                display={{ base: "none", md: "block" }}
-              >
-                {user?.businessName}
-              </Text>
-
-              <Button
-                size="sm"
-                variant="outline"
-                borderColor="accent.200"
-                color="accent.700"
-                _hover={{ 
-                  bg: "accent.50",
-                  borderColor: "danger.400",
-                  color: "danger.400"
-                }}
-                _dark={{ 
-                  borderColor: "accent.700",
-                  color: "accent.300",
-                  _hover: { 
-                    bg: "accent.900",
-                    borderColor: "danger.400",
-                    color: "danger.400"
-                  } 
-                }}
-                onClick={handleLogout}
-                px={4}
-                py={2}
-              >
-                Logout
-              </Button>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
+      <AppHeader />
 
       {/* Main Content */}
       <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>

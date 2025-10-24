@@ -1,12 +1,14 @@
-import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge, HStack } from '@chakra-ui/react'
+import { LuUserPlus, LuCalendarPlus } from 'react-icons/lu'
 import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { memberService } from '@/services/member.service'
 import { sessionService } from '@/services/session.service'
+import { AppHeader } from '@/components/app-header'
 
 export function DashboardPage() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const [stats, setStats] = useState({
     total: 0,
@@ -44,66 +46,9 @@ export function DashboardPage() {
     loadStats()
   }, [user])
 
-  async function handleLogout() {
-    try {
-      await logout()
-      navigate('/login')
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
-  }
-
   return (
     <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      {/* Header */}
-      <Box 
-        bg="white" 
-        _dark={{ bg: "accent.800" }} 
-        borderBottom="subtle"
-        py={4}
-      >
-        <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }}>
-          <Stack direction="row" justify="space-between" align="center">
-            <Heading
-              fontSize="2xl"
-              fontWeight="700"
-              bgGradient="to-r"
-              gradientFrom="brand.400"
-              gradientTo="secondary.500"
-              bgClip="text"
-              fontFamily="heading"
-            >
-              LeanSubs
-            </Heading>
-
-            <Button
-              size="sm"
-              variant="outline"
-              borderColor="accent.200"
-              color="accent.700"
-              _hover={{ 
-                bg: "accent.50",
-                borderColor: "danger.400",
-                color: "danger.400"
-              }}
-              _dark={{ 
-                borderColor: "accent.700",
-                color: "accent.300",
-                _hover: { 
-                  bg: "accent.900",
-                  borderColor: "danger.400",
-                  color: "danger.400"
-                } 
-              }}
-              onClick={handleLogout}
-              px={4}
-              py={2}
-            >
-              Logout
-            </Button>
-          </Stack>
-        </Container>
-      </Box>
+      <AppHeader />
 
       {/* Main Content */}
       <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
@@ -173,177 +118,91 @@ export function DashboardPage() {
               Quick Actions
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4}>
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
               <Button
                 onClick={() => navigate('/members/add')}
-                bg="white"
-                _dark={{ bg: "accent.800" }}
+                bg="secondary.500"
+                _dark={{ bg: "secondary.600" }}
                 border="subtle"
                 shadow="base"
                 h="auto"
-                p={6}
+                p={8}
                 borderRadius="md"
                 _hover={{
                   transform: "translateY(-2px)",
                   shadow: "lg",
-                  borderColor: "brand.400"
+                  bg: "secondary.600",
+                  _dark: { bg: "secondary.700" }
                 }}
                 transition="all 0.2s ease-in-out"
               >
-                <Stack gap={3} align="flex-start" w="full">
-                  <Text fontSize="2xl">➕</Text>
+                <HStack gap={3} align="center" w="full">
+                  <Box as={LuUserPlus} fontSize="2xl" color="white" />
 
-                  <Stack gap={1} align="flex-start">
+                  <Stack gap={1} align="flex-start" flex={1}>
                     <Text
-                      fontSize="md"
+                      fontSize="lg"
                       fontWeight="600"
                       fontFamily="heading"
-                      color="accent.800"
-                      _dark={{ color: "accent.100" }}
+                      color="white"
                     >
                       Add Member
                     </Text>
 
                     <Text
                       fontSize="sm"
-                      color="accent.600"
-                      _dark={{ color: "accent.400" }}
+                      color="white"
                       fontFamily="body"
                       textAlign="left"
+                      opacity={0.9}
                     >
                       Create a new member record
                     </Text>
                   </Stack>
-                </Stack>
-              </Button>
-
-              <Button
-                onClick={() => navigate('/members')}
-                bg="white"
-                _dark={{ bg: "accent.800" }}
-                border="subtle"
-                shadow="base"
-                h="auto"
-                p={6}
-                borderRadius="md"
-                _hover={{
-                  transform: "translateY(-2px)",
-                  shadow: "lg",
-                  borderColor: "brand.400"
-                }}
-                transition="all 0.2s ease-in-out"
-              >
-                <Stack gap={3} align="flex-start" w="full">
-                  <Text fontSize="2xl">📊</Text>
-
-                  <Stack gap={1} align="flex-start">
-                    <Text
-                      fontSize="md"
-                      fontWeight="600"
-                      fontFamily="heading"
-                      color="accent.800"
-                      _dark={{ color: "accent.100" }}
-                    >
-                      View Members
-                    </Text>
-
-                    <Text
-                      fontSize="sm"
-                      color="accent.600"
-                      _dark={{ color: "accent.400" }}
-                      fontFamily="body"
-                      textAlign="left"
-                    >
-                      See all member records
-                    </Text>
-                  </Stack>
-                </Stack>
+                </HStack>
               </Button>
 
               <Button
                 onClick={() => navigate('/sessions/add')}
-                bg="white"
-                _dark={{ bg: "accent.800" }}
+                bg="brand.400"
+                _dark={{ bg: "brand.500" }}
                 border="subtle"
                 shadow="base"
                 h="auto"
-                p={6}
+                p={8}
                 borderRadius="md"
                 _hover={{
                   transform: "translateY(-2px)",
                   shadow: "lg",
-                  borderColor: "brand.400"
+                  bg: "brand.500",
+                  _dark: { bg: "brand.600" }
                 }}
                 transition="all 0.2s ease-in-out"
               >
-                <Stack gap={3} align="flex-start" w="full">
-                  <Text fontSize="2xl">📅</Text>
+                <HStack gap={3} align="center" w="full">
+                  <Box as={LuCalendarPlus} fontSize="2xl" color="white" />
 
-                  <Stack gap={1} align="flex-start">
+                  <Stack gap={1} align="flex-start" flex={1}>
                     <Text
-                      fontSize="md"
+                      fontSize="lg"
                       fontWeight="600"
                       fontFamily="heading"
-                      color="accent.800"
-                      _dark={{ color: "accent.100" }}
+                      color="white"
                     >
                       Record Session
                     </Text>
 
                     <Text
                       fontSize="sm"
-                      color="accent.600"
-                      _dark={{ color: "accent.400" }}
+                      color="white"
                       fontFamily="body"
                       textAlign="left"
+                      opacity={0.9}
                     >
                       Log a training session
                     </Text>
                   </Stack>
-                </Stack>
-              </Button>
-
-              <Button
-                onClick={() => navigate('/sessions')}
-                bg="white"
-                _dark={{ bg: "accent.800" }}
-                border="subtle"
-                shadow="base"
-                h="auto"
-                p={6}
-                borderRadius="md"
-                _hover={{
-                  transform: "translateY(-2px)",
-                  shadow: "lg",
-                  borderColor: "brand.400"
-                }}
-                transition="all 0.2s ease-in-out"
-              >
-                <Stack gap={3} align="flex-start" w="full">
-                  <Text fontSize="2xl">✅</Text>
-
-                  <Stack gap={1} align="flex-start">
-                    <Text
-                      fontSize="md"
-                      fontWeight="600"
-                      fontFamily="heading"
-                      color="accent.800"
-                      _dark={{ color: "accent.100" }}
-                    >
-                      View Sessions
-                    </Text>
-
-                    <Text
-                      fontSize="sm"
-                      color="accent.600"
-                      _dark={{ color: "accent.400" }}
-                      fontFamily="body"
-                      textAlign="left"
-                    >
-                      Review and verify sessions
-                    </Text>
-                  </Stack>
-                </Stack>
+                </HStack>
               </Button>
             </SimpleGrid>
           </Stack>
