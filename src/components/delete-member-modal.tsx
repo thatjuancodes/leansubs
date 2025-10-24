@@ -127,12 +127,11 @@ export function DeleteMemberModal({ member, isOpen, onClose, onDelete }: DeleteM
           {/* Member Info */}
           <Box
             bg="accent.50"
-            _dark={{ bg: "accent.900" }}
+            _dark={{ bg: "accent.900", borderColor: "accent.700" }}
             p={4}
             borderRadius="md"
             border="1px solid"
             borderColor="accent.200"
-            _dark={{ borderColor: "accent.700" }}
           >
             <Stack gap={2}>
               <Text
@@ -261,7 +260,7 @@ export function DeleteMemberModal({ member, isOpen, onClose, onDelete }: DeleteM
               borderRadius="md"
               fontWeight="600"
               transition="all 0.2s ease-in-out"
-              isLoading={isLoading}
+              loading={isLoading}
               loadingText="Deleting..."
               onClick={handleDelete}
               disabled={!isConfirmationMatch || isLoading}

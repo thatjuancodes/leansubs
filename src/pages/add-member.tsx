@@ -18,6 +18,7 @@ export function AddMemberPage() {
   const [membershipType, setMembershipType] = useState<MembershipType | ''>('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [credits, setCredits] = useState('')
   const [status, setStatus] = useState<MembershipStatus>('active')
   const [notes, setNotes] = useState('')
   const [success, setSuccess] = useState('')
@@ -44,6 +45,12 @@ export function AddMemberPage() {
       return
     }
 
+    const creditsNum = parseInt(credits) || 0
+    if (creditsNum < 0) {
+      setError('Credits must be a positive number')
+      return
+    }
+
     setError('')
     setSuccess('')
     setIsLoading(true)
@@ -57,6 +64,7 @@ export function AddMemberPage() {
         status,
         startDate,
         endDate,
+        credits: creditsNum,
         notes: notes || undefined,
       })
 
@@ -69,6 +77,7 @@ export function AddMemberPage() {
       setMembershipType('')
       setStartDate('')
       setEndDate('')
+      setCredits('')
       setStatus('active')
       setNotes('')
 
@@ -340,24 +349,24 @@ export function AddMemberPage() {
                       Status *
                     </Text>
 
-                    <Box
-                      as="select"
-                      value={status}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatus(e.target.value as MembershipStatus)}
-                      borderColor="accent.200"
-                      _dark={{ borderColor: "accent.700" }}
-                      _hover={{ borderColor: "brand.400" }}
-                      _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
-                      borderRadius="md"
-                      fontFamily="body"
-                      disabled={isLoading}
-                      px={3}
-                      py={2}
-                      h="auto"
-                      borderWidth="1px"
-                      bg="white"
-                      _dark={{ bg: "accent.900" }}
-                    >
+                      <Box
+                        as="select"
+                        value={status}
+                        onChange={(e) => setStatus((e.target as HTMLSelectElement).value as MembershipStatus)}
+                        borderColor="accent.200"
+                        _dark={{ borderColor: "accent.700", bg: "accent.900" }}
+                        _hover={{ borderColor: "brand.400" }}
+                        _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
+                        borderRadius="md"
+                        fontFamily="body"
+                        disabled={isLoading}
+                        px={3}
+                        py={2}
+                        h="auto"
+                        borderWidth="1px"
+                        bg="white"
+                        {...({} as any)}
+                      >
                       <option value="active">Active</option>
                       <option value="expired">Expired</option>
                       <option value="cancelled">Cancelled</option>
@@ -396,9 +405,12 @@ export function AddMemberPage() {
                       placeholder="Select membership type"
                       required
                       value={membershipType}
-                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setMembershipType(e.target.value)}
+                      onChange={(e) => {
+                        const value = (e.target as HTMLSelectElement).value
+                        setMembershipType(value as MembershipType | '')
+                      }}
                       borderColor="accent.200"
-                      _dark={{ borderColor: "accent.700" }}
+                      _dark={{ borderColor: "accent.700", bg: "accent.900" }}
                       _hover={{ borderColor: "brand.400" }}
                       _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
                       borderRadius="md"
@@ -409,7 +421,7 @@ export function AddMemberPage() {
                       h="auto"
                       borderWidth="1px"
                       bg="white"
-                      _dark={{ bg: "accent.900" }}
+                      {...({} as any)}
                     >
                       <option value="">Select membership type</option>
                       <option value="basic">Basic - Monthly</option>
@@ -476,6 +488,36 @@ export function AddMemberPage() {
                       py={2}
                     />
                   </Stack>
+
+                  <Stack gap={2}>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="500"
+                      color="accent.700"
+                      _dark={{ color: "accent.300" }}
+                      fontFamily="body"
+                    >
+                      Credits *
+                    </Text>
+
+                    <Input
+                      type="number"
+                      required
+                      min="0"
+                      value={credits}
+                      onChange={(e) => setCredits(e.target.value)}
+                      placeholder="e.g. 10"
+                      borderColor="accent.200"
+                      _dark={{ borderColor: "accent.700" }}
+                      _hover={{ borderColor: "brand.400" }}
+                      _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
+                      borderRadius="md"
+                      fontFamily="body"
+                      disabled={isLoading}
+                      px={3}
+                      py={2}
+                    />
+                  </Stack>
                 </SimpleGrid>
               </Stack>
 
@@ -491,26 +533,26 @@ export function AddMemberPage() {
                   Notes
                 </Text>
 
-                <Box
-                  as="textarea"
-                  placeholder="Add any additional notes about the member..."
-                  value={notes}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
-                  borderColor="accent.200"
-                  _dark={{ borderColor: "accent.700" }}
-                  _hover={{ borderColor: "brand.400" }}
-                  _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
-                  borderRadius="md"
-                  fontFamily="body"
-                  disabled={isLoading}
-                  px={3}
-                  py={2}
-                  minH="120px"
-                  resize="vertical"
-                  borderWidth="1px"
-                  bg="white"
-                  _dark={{ bg: "accent.900" }}
-                />
+                  <Box
+                    as="textarea"
+                    placeholder="Add any additional notes about the member..."
+                    value={notes}
+                    onChange={(e) => setNotes((e.target as HTMLTextAreaElement).value)}
+                    borderColor="accent.200"
+                    _dark={{ borderColor: "accent.700", bg: "accent.900" }}
+                    _hover={{ borderColor: "brand.400" }}
+                    _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
+                    borderRadius="md"
+                    fontFamily="body"
+                    disabled={isLoading}
+                    px={3}
+                    py={2}
+                    minH="120px"
+                    resize="vertical"
+                    borderWidth="1px"
+                    bg="white"
+                    {...({} as any)}
+                  />
               </Stack>
 
               {/* Action Buttons */}
@@ -554,7 +596,7 @@ export function AddMemberPage() {
                   borderRadius="md"
                   fontWeight="600"
                   transition="all 0.2s ease-in-out"
-                  isLoading={isLoading}
+                  loading={isLoading}
                   loadingText="Saving..."
                   px={6}
                   py={3}

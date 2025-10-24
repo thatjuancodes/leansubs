@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Container, Heading, Text, Button, Stack, Input, Link as ChakraLink } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, Button, Stack, Input } from '@chakra-ui/react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 
@@ -236,7 +236,7 @@ export function RegisterPage() {
                   fontWeight="600"
                   transition="all 0.2s ease-in-out"
                   w="full"
-                  isLoading={isLoading}
+                  loading={isLoading}
                   loadingText="Creating account..."
                   px={6}
                   py={3}
@@ -252,15 +252,16 @@ export function RegisterPage() {
                   fontFamily="body"
                 >
                   Already have an account?{' '}
-                  <ChakraLink
+                  <Box
                     as={Link}
                     to="/login"
                     color="brand.400"
                     fontWeight="600"
                     _hover={{ color: "brand.500", textDecoration: "underline" }}
+                    {...({} as any)}
                   >
                     Sign in
-                  </ChakraLink>
+                  </Box>
                 </Text>
               </Stack>
             </Stack>
@@ -268,7 +269,7 @@ export function RegisterPage() {
 
           {/* Back to Home */}
           <Text textAlign="center">
-            <ChakraLink
+            <Box
               as={Link}
               to="/"
               color="accent.600"
@@ -276,9 +277,10 @@ export function RegisterPage() {
               fontSize="sm"
               fontFamily="body"
               _hover={{ color: "brand.400" }}
+              {...({} as any)}
             >
               ← Back to home
-            </ChakraLink>
+            </Box>
           </Text>
         </Stack>
       </Container>

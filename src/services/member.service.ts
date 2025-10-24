@@ -30,7 +30,22 @@ class MemberService {
     await this.delay()
     
     const members = this.loadFromStorage()
-    let filtered = members.filter(m => m.userId === userId)
+    
+    // Migrate old records without credits field
+    let needsMigration = false
+    const migratedMembers = members.map(m => {
+      if (m.credits === undefined) {
+        needsMigration = true
+        return { ...m, credits: 0 }
+      }
+      return m
+    })
+    
+    if (needsMigration) {
+      this.saveToStorage(migratedMembers)
+    }
+    
+    let filtered = migratedMembers.filter(m => m.userId === userId)
 
     // Apply filters
     if (filters?.status) {
@@ -106,6 +121,7 @@ class MemberService {
       status: input.status,
       startDate: input.startDate,
       endDate: input.endDate,
+      credits: input.credits,
       notes: input.notes,
       createdAt: now,
       updatedAt: now,

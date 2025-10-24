@@ -5,6 +5,8 @@ import { RegisterPage } from '@/pages/register'
 import { DashboardPage } from '@/pages/dashboard'
 import { AddMemberPage } from '@/pages/add-member'
 import { MembersPage } from '@/pages/members'
+import { AddSessionPage } from '@/pages/add-session'
+import { SessionsPage } from '@/pages/sessions'
 import { ProtectedRoute } from '@/components/protected-route'
 
 function App() {
@@ -35,6 +37,22 @@ function App() {
           element={
             <ProtectedRoute>
               <AddMemberPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/sessions/add" 
+          element={
+            <ProtectedRoute>
+              <AddSessionPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/sessions" 
+          element={
+            <ProtectedRoute>
+              <SessionsPage />
             </ProtectedRoute>
           } 
         />

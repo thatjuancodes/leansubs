@@ -19,6 +19,7 @@ export interface Member {
   status: MembershipStatus
   startDate: string // ISO date string
   endDate: string // ISO date string
+  credits: number // Available session credits
   
   // Additional Info
   notes?: string
@@ -50,6 +51,7 @@ export interface CreateMemberInput {
   status: MembershipStatus
   startDate: string
   endDate: string
+  credits: number
   notes?: string
 }
 
@@ -62,6 +64,7 @@ export interface UpdateMemberInput {
   status?: MembershipStatus
   startDate?: string
   endDate?: string
+  credits?: number
   notes?: string
 }
 
@@ -86,6 +89,7 @@ export interface MemberFilters {
  *   status VARCHAR(50) NOT NULL,
  *   start_date DATE NOT NULL,
  *   end_date DATE NOT NULL,
+ *   credits INTEGER NOT NULL DEFAULT 0,
  *   notes TEXT,
  *   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
  *   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

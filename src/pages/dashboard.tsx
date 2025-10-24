@@ -3,6 +3,7 @@ import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { memberService } from '@/services/member.service'
+import { sessionService } from '@/services/session.service'
 
 export function DashboardPage() {
   const { user, logout } = useAuth()
@@ -14,6 +15,12 @@ export function DashboardPage() {
     cancelled: 0,
     paused: 0,
   })
+  const [sessionStats, setSessionStats] = useState({
+    total: 0,
+    unverified: 0,
+    verified: 0,
+    totalCreditsUsed: 0,
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -21,8 +28,12 @@ export function DashboardPage() {
       if (!user) return
       
       try {
-        const memberStats = await memberService.getStats(user.id)
+        const [memberStats, sessions] = await Promise.all([
+          memberService.getStats(user.id),
+          sessionService.getStats(user.id),
+        ])
         setStats(memberStats)
+        setSessionStats(sessions)
       } catch (error) {
         console.error('Failed to load stats:', error)
       } finally {
@@ -120,28 +131,76 @@ export function DashboardPage() {
           </Stack>
 
           {/* Stats Grid */}
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
-            <StatCard
-              title="Active Members"
-              value={isLoading ? '...' : stats.active.toString()}
-              badge={stats.active > 0 ? 'Active subscriptions' : 'No active members'}
-              badgeColor={stats.active > 0 ? 'success.500' : 'accent.500'}
-            />
+          <Stack gap={4}>
+            <Heading
+              fontSize="xl"
+              fontWeight="600"
+              fontFamily="heading"
+              color="accent.800"
+              _dark={{ color: "accent.100" }}
+            >
+              Member Statistics
+            </Heading>
 
-            <StatCard
-              title="Total Members"
-              value={isLoading ? '...' : stats.total.toString()}
-              badge={`${stats.expired} expired, ${stats.cancelled} cancelled`}
-              badgeColor="brand.400"
-            />
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+              <StatCard
+                title="Active Members"
+                value={isLoading ? '...' : stats.active.toString()}
+                badge={stats.active > 0 ? 'Active subscriptions' : 'No active members'}
+                badgeColor={stats.active > 0 ? 'success.500' : 'accent.500'}
+              />
 
-            <StatCard
-              title="Paused Members"
-              value={isLoading ? '...' : stats.paused.toString()}
-              badge={stats.paused > 0 ? 'Temporarily paused' : 'None paused'}
-              badgeColor={stats.paused > 0 ? 'warning.300' : 'accent.500'}
-            />
-          </SimpleGrid>
+              <StatCard
+                title="Total Members"
+                value={isLoading ? '...' : stats.total.toString()}
+                badge={`${stats.expired} expired, ${stats.cancelled} cancelled`}
+                badgeColor="brand.400"
+              />
+
+              <StatCard
+                title="Paused Members"
+                value={isLoading ? '...' : stats.paused.toString()}
+                badge={stats.paused > 0 ? 'Temporarily paused' : 'None paused'}
+                badgeColor={stats.paused > 0 ? 'warning.300' : 'accent.500'}
+              />
+            </SimpleGrid>
+          </Stack>
+
+          {/* Session Stats Grid */}
+          <Stack gap={4}>
+            <Heading
+              fontSize="xl"
+              fontWeight="600"
+              fontFamily="heading"
+              color="accent.800"
+              _dark={{ color: "accent.100" }}
+            >
+              Session Statistics
+            </Heading>
+
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+              <StatCard
+                title="Total Sessions"
+                value={isLoading ? '...' : sessionStats.total.toString()}
+                badge={`${sessionStats.totalCreditsUsed} credits used`}
+                badgeColor="brand.400"
+              />
+
+              <StatCard
+                title="Unverified Sessions"
+                value={isLoading ? '...' : sessionStats.unverified.toString()}
+                badge={sessionStats.unverified > 0 ? 'Needs verification' : 'All verified'}
+                badgeColor={sessionStats.unverified > 0 ? 'warning.400' : 'success.500'}
+              />
+
+              <StatCard
+                title="Verified Sessions"
+                value={isLoading ? '...' : sessionStats.verified.toString()}
+                badge={sessionStats.verified > 0 ? 'Confirmed sessions' : 'No verified sessions'}
+                badgeColor={sessionStats.verified > 0 ? 'success.500' : 'accent.500'}
+              />
+            </SimpleGrid>
+          </Stack>
 
           {/* Quick Actions */}
           <Stack gap={4}>
@@ -155,7 +214,7 @@ export function DashboardPage() {
               Quick Actions
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4}>
               <Button
                 onClick={() => navigate('/members/add')}
                 bg="white"
@@ -242,17 +301,23 @@ export function DashboardPage() {
                 </Stack>
               </Button>
 
-              <Box
+              <Button
+                onClick={() => navigate('/sessions/add')}
                 bg="white"
                 _dark={{ bg: "accent.800" }}
                 border="subtle"
                 shadow="base"
+                h="auto"
                 p={6}
                 borderRadius="md"
-                opacity={0.6}
-                cursor="not-allowed"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "lg",
+                  borderColor: "brand.400"
+                }}
+                transition="all 0.2s ease-in-out"
               >
-                <Stack gap={3} align="flex-start">
+                <Stack gap={3} align="flex-start" w="full">
                   <Text fontSize="2xl">📅</Text>
 
                   <Stack gap={1} align="flex-start">
@@ -263,7 +328,7 @@ export function DashboardPage() {
                       color="accent.800"
                       _dark={{ color: "accent.100" }}
                     >
-                      Track Sessions
+                      Record Session
                     </Text>
 
                     <Text
@@ -271,12 +336,56 @@ export function DashboardPage() {
                       color="accent.600"
                       _dark={{ color: "accent.400" }}
                       fontFamily="body"
+                      textAlign="left"
                     >
-                      Coming soon
+                      Log a training session
                     </Text>
                   </Stack>
                 </Stack>
-              </Box>
+              </Button>
+
+              <Button
+                onClick={() => navigate('/sessions')}
+                bg="white"
+                _dark={{ bg: "accent.800" }}
+                border="subtle"
+                shadow="base"
+                h="auto"
+                p={6}
+                borderRadius="md"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "lg",
+                  borderColor: "brand.400"
+                }}
+                transition="all 0.2s ease-in-out"
+              >
+                <Stack gap={3} align="flex-start" w="full">
+                  <Text fontSize="2xl">✅</Text>
+
+                  <Stack gap={1} align="flex-start">
+                    <Text
+                      fontSize="md"
+                      fontWeight="600"
+                      fontFamily="heading"
+                      color="accent.800"
+                      _dark={{ color: "accent.100" }}
+                    >
+                      View Sessions
+                    </Text>
+
+                    <Text
+                      fontSize="sm"
+                      color="accent.600"
+                      _dark={{ color: "accent.400" }}
+                      fontFamily="body"
+                      textAlign="left"
+                    >
+                      Review and verify sessions
+                    </Text>
+                  </Stack>
+                </Stack>
+              </Button>
             </SimpleGrid>
           </Stack>
         </Stack>

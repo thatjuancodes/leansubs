@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge, Input } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, Button, Stack, Badge, Input } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { memberService } from '@/services/member.service'
@@ -371,6 +371,20 @@ export function MembersPage() {
                         textTransform="uppercase"
                         letterSpacing="wide"
                       >
+                        Credits
+                      </Box>
+                      <Box
+                        as="th"
+                        px={6}
+                        py={4}
+                        fontFamily="heading"
+                        fontSize="sm"
+                        fontWeight="600"
+                        color="accent.700"
+                        _dark={{ color: "accent.300" }}
+                        textTransform="uppercase"
+                        letterSpacing="wide"
+                      >
                         Status
                       </Box>
                     </Box>
@@ -496,6 +510,20 @@ function MemberRow({ member, getStatusColor, getStatusLabel, onClick }: MemberRo
         display={{ base: "none", lg: "table-cell" }}
       >
         {new Date(member.endDate).toLocaleDateString()}
+      </Box>
+
+      {/* Credits */}
+      <Box
+        as="td"
+        px={6}
+        py={4}
+        fontFamily="body"
+        fontSize="sm"
+        fontWeight="600"
+        color={(member.credits ?? 0) > 0 ? "success.600" : "danger.600"}
+        _dark={{ color: (member.credits ?? 0) > 0 ? "success.400" : "danger.400" }}
+      >
+        {member.credits ?? 0}
       </Box>
 
       {/* Status */}

@@ -57,7 +57,7 @@ class AuthService {
    * Register a new user
    * TODO: Replace with Supabase auth.signUp() or PostgreSQL insert
    */
-  async register(credentials: RegisterCredentials): Promise<AuthResponse> {
+  async register(_credentials: RegisterCredentials): Promise<AuthResponse> {
     await delay()
 
     // For now, mock registration always succeeds and returns the admin user
