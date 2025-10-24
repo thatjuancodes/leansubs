@@ -8,7 +8,7 @@ import { sessionService } from '@/services/session.service'
 import { AppHeader } from '@/components/app-header'
 
 export function DashboardPage() {
-  const { user } = useAuth()
+  const { user, organization } = useAuth()
   const navigate = useNavigate()
   const [stats, setStats] = useState({
     total: 0,
@@ -71,7 +71,7 @@ export function DashboardPage() {
               _dark={{ color: "accent.400" }}
               fontFamily="body"
             >
-              {user?.businessName} Dashboard
+              {organization?.name || 'Organization'} Dashboard
             </Text>
           </Stack>
 

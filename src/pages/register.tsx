@@ -7,7 +7,7 @@ export function RegisterPage() {
   const navigate = useNavigate()
   const { register } = useAuth()
   const [name, setName] = useState('')
-  const [businessName, setBusinessName] = useState('')
+  const [organizationName, setOrganizationName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -19,7 +19,7 @@ export function RegisterPage() {
     setIsLoading(true)
 
     try {
-      await register({ name, businessName, email, password })
+      await register({ name, organizationName, email, password })
       navigate('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed')
@@ -136,15 +136,15 @@ export function RegisterPage() {
                     _dark={{ color: "accent.300" }}
                     fontFamily="body"
                   >
-                    Business Name
+                    Organization Name
                   </Text>
 
                   <Input
                     type="text"
                     placeholder="Acme Fitness"
                     required
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
+                    value={organizationName}
+                    onChange={(e) => setOrganizationName(e.target.value)}
                     borderColor="accent.200"
                     _dark={{ borderColor: "accent.700" }}
                     _hover={{ borderColor: "brand.400" }}

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { AppHeader } from '@/components/app-header'
 
 export function ProfilePage() {
-  const { user } = useAuth()
+  const { user, organization } = useAuth()
   const navigate = useNavigate()
 
   function formatDate(dateString: string) {
@@ -97,11 +97,11 @@ export function ProfilePage() {
                   value={user?.email || 'N/A'}
                 />
 
-                <ProfileField
-                  icon={LuBuilding2}
-                  label="Business Name"
-                  value={user?.businessName || 'N/A'}
-                />
+              <ProfileField
+                icon={LuBuilding2}
+                label="Organization Name"
+                value={organization?.name || 'N/A'}
+              />
 
                 <ProfileField
                   icon={LuCalendar}

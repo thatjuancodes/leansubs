@@ -1,14 +1,17 @@
+import type { Organization } from './organization'
+
 export interface User {
   id: string
   email: string
   name: string
-  businessName: string
   createdAt: string
+  currentOrganizationId?: string // The currently selected organization
 }
 
 export interface AuthResponse {
   user: User
   token: string
+  organization: Organization // The user's primary/first organization
 }
 
 export interface LoginCredentials {
@@ -18,7 +21,7 @@ export interface LoginCredentials {
 
 export interface RegisterCredentials {
   name: string
-  businessName: string
+  organizationName: string // Changed from businessName to be more explicit
   email: string
   password: string
 }
