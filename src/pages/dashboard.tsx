@@ -130,7 +130,7 @@ export function DashboardPage() {
             </Text>
           </Stack>
 
-          {/* Stats Grid */}
+          {/* Overview Cards */}
           <Stack gap={4}>
             <Heading
               fontSize="xl"
@@ -139,65 +139,24 @@ export function DashboardPage() {
               color="accent.800"
               _dark={{ color: "accent.100" }}
             >
-              Member Statistics
+              Overview
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
-              <StatCard
-                title="Active Members"
-                value={isLoading ? '...' : stats.active.toString()}
-                badge={stats.active > 0 ? 'Active subscriptions' : 'No active members'}
-                badgeColor={stats.active > 0 ? 'success.500' : 'accent.500'}
-              />
-
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
               <StatCard
                 title="Total Members"
                 value={isLoading ? '...' : stats.total.toString()}
-                badge={`${stats.expired} expired, ${stats.cancelled} cancelled`}
+                badge={`${stats.active} active • ${stats.paused} paused`}
                 badgeColor="brand.400"
+                onClick={() => navigate('/members')}
               />
 
-              <StatCard
-                title="Paused Members"
-                value={isLoading ? '...' : stats.paused.toString()}
-                badge={stats.paused > 0 ? 'Temporarily paused' : 'None paused'}
-                badgeColor={stats.paused > 0 ? 'warning.300' : 'accent.500'}
-              />
-            </SimpleGrid>
-          </Stack>
-
-          {/* Session Stats Grid */}
-          <Stack gap={4}>
-            <Heading
-              fontSize="xl"
-              fontWeight="600"
-              fontFamily="heading"
-              color="accent.800"
-              _dark={{ color: "accent.100" }}
-            >
-              Session Statistics
-            </Heading>
-
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
               <StatCard
                 title="Total Sessions"
                 value={isLoading ? '...' : sessionStats.total.toString()}
                 badge={`${sessionStats.totalCreditsUsed} credits used`}
-                badgeColor="brand.400"
-              />
-
-              <StatCard
-                title="Unverified Sessions"
-                value={isLoading ? '...' : sessionStats.unverified.toString()}
-                badge={sessionStats.unverified > 0 ? 'Needs verification' : 'All verified'}
-                badgeColor={sessionStats.unverified > 0 ? 'warning.400' : 'success.500'}
-              />
-
-              <StatCard
-                title="Verified Sessions"
-                value={isLoading ? '...' : sessionStats.verified.toString()}
-                badge={sessionStats.verified > 0 ? 'Confirmed sessions' : 'No verified sessions'}
-                badgeColor={sessionStats.verified > 0 ? 'success.500' : 'accent.500'}
+                badgeColor="secondary.500"
+                onClick={() => navigate('/sessions')}
               />
             </SimpleGrid>
           </Stack>
@@ -399,9 +358,10 @@ interface StatCardProps {
   value: string
   badge: string
   badgeColor: string
+  onClick?: () => void
 }
 
-function StatCard({ title, value, badge, badgeColor }: StatCardProps) {
+function StatCard({ title, value, badge, badgeColor, onClick }: StatCardProps) {
   return (
     <Box
       bg="white"
@@ -410,6 +370,14 @@ function StatCard({ title, value, badge, badgeColor }: StatCardProps) {
       borderRadius="md"
       border="subtle"
       shadow="base"
+      cursor={onClick ? "pointer" : "default"}
+      onClick={onClick}
+      _hover={onClick ? {
+        transform: "translateY(-2px)",
+        shadow: "lg",
+        borderColor: "brand.400"
+      } : undefined}
+      transition="all 0.2s ease-in-out"
     >
       <Stack gap={3}>
         <Text
