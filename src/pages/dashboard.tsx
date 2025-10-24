@@ -1,10 +1,11 @@
 import { Box, Container, Heading, Text, Button, Stack, SimpleGrid, Badge, HStack } from '@chakra-ui/react'
-import { LuUserPlus, LuCalendarPlus } from 'react-icons/lu'
+import { LuUserPlus, LuCalendarPlus, LuCreditCard } from 'react-icons/lu'
 import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { memberService } from '@/services/member.service'
 import { sessionService } from '@/services/session.service'
+import { subscriptionService } from '@/services/subscription.service'
 import { AppHeader } from '@/components/app-header'
 
 export function DashboardPage() {
@@ -23,19 +24,26 @@ export function DashboardPage() {
     verified: 0,
     totalCreditsUsed: 0,
   })
+  const [subscriptionStats, setSubscriptionStats] = useState({
+    total: 0,
+    totalAmount: 0,
+    totalCredits: 0,
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function loadStats() {
-      if (!user) return
+      if (!user || !organization) return
       
       try {
-        const [memberStats, sessions] = await Promise.all([
+        const [memberStats, sessions, subscriptions] = await Promise.all([
           memberService.getStats(user.id),
           sessionService.getStats(user.id),
+          subscriptionService.getStats(organization.id),
         ])
         setStats(memberStats)
         setSessionStats(sessions)
+        setSubscriptionStats(subscriptions)
       } catch (error) {
         console.error('Failed to load stats:', error)
       } finally {
@@ -44,7 +52,7 @@ export function DashboardPage() {
     }
 
     loadStats()
-  }, [user])
+  }, [user, organization])
 
   return (
     <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
@@ -87,7 +95,7 @@ export function DashboardPage() {
               Overview
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
               <StatCard
                 title="Total Members"
                 value={isLoading ? '...' : stats.total.toString()}
@@ -102,6 +110,14 @@ export function DashboardPage() {
                 badge={`${sessionStats.totalCreditsUsed} credits used`}
                 badgeColor="secondary.500"
                 onClick={() => navigate('/sessions')}
+              />
+
+              <StatCard
+                title="Subscriptions"
+                value={isLoading ? '...' : subscriptionStats.total.toString()}
+                badge={`${subscriptionStats.totalCredits} credits sold`}
+                badgeColor="success.500"
+                onClick={() => navigate('/subscriptions')}
               />
             </SimpleGrid>
           </Stack>
@@ -118,7 +134,7 @@ export function DashboardPage() {
               Quick Actions
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
               <Button
                 onClick={() => navigate('/members/add')}
                 bg="secondary.500"
@@ -200,6 +216,49 @@ export function DashboardPage() {
                       opacity={0.9}
                     >
                       Log a training session
+                    </Text>
+                  </Stack>
+                </HStack>
+              </Button>
+
+              <Button
+                onClick={() => navigate('/subscriptions/add')}
+                bg="success.500"
+                _dark={{ bg: "success.600" }}
+                border="subtle"
+                shadow="base"
+                h="auto"
+                p={8}
+                borderRadius="md"
+                _hover={{
+                  transform: "translateY(-2px)",
+                  shadow: "lg",
+                  bg: "success.600",
+                  _dark: { bg: "success.700" }
+                }}
+                transition="all 0.2s ease-in-out"
+              >
+                <HStack gap={3} align="center" w="full">
+                  <Box as={LuCreditCard} fontSize="2xl" color="white" />
+
+                  <Stack gap={1} align="flex-start" flex={1}>
+                    <Text
+                      fontSize="lg"
+                      fontWeight="600"
+                      fontFamily="heading"
+                      color="white"
+                    >
+                      Add Subscription
+                    </Text>
+
+                    <Text
+                      fontSize="sm"
+                      color="white"
+                      fontFamily="body"
+                      textAlign="left"
+                      opacity={0.9}
+                    >
+                      Record a payment
                     </Text>
                   </Stack>
                 </HStack>

@@ -8,6 +8,8 @@ import { AddMemberPage } from '@/pages/add-member'
 import { MembersPage } from '@/pages/members'
 import { AddSessionPage } from '@/pages/add-session'
 import { SessionsPage } from '@/pages/sessions'
+import { AddSubscriptionPage } from '@/pages/add-subscription'
+import { SubscriptionsPage } from '@/pages/subscriptions'
 import { ProtectedRoute } from '@/components/protected-route'
 
 function App() {
@@ -62,6 +64,22 @@ function App() {
           element={
             <ProtectedRoute>
               <SessionsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/subscriptions/add" 
+          element={
+            <ProtectedRoute>
+              <AddSubscriptionPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/subscriptions" 
+          element={
+            <ProtectedRoute>
+              <SubscriptionsPage />
             </ProtectedRoute>
           } 
         />
