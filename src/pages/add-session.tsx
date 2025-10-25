@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Box, Container, Heading, Text, Button, Stack, Input } from '@chakra-ui/react'
+import { Box, Container, Heading, Text, Button, Stack, Input, SimpleGrid } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { sessionService } from '@/services/session.service'
@@ -9,7 +9,7 @@ import type { Member } from '@/types/member'
 
 export function AddSessionPage() {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, organization } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -37,7 +37,7 @@ export function AddSessionPage() {
     }
   }, [user])
 
-  // Set default start time to now
+  // Set default start time to now and calculate end time
   useEffect(() => {
     const now = new Date()
     // Format as datetime-local format (YYYY-MM-DDTHH:MM)
@@ -47,8 +47,21 @@ export function AddSessionPage() {
     const hours = String(now.getHours()).padStart(2, '0')
     const minutes = String(now.getMinutes()).padStart(2, '0')
     
-    setStartTime(`${year}-${month}-${day}T${hours}:${minutes}`)
-  }, [])
+    const startTimeStr = `${year}-${month}-${day}T${hours}:${minutes}`
+    setStartTime(startTimeStr)
+    
+    // Calculate end time based on default session length
+    if (organization?.settings?.sessionDefaultLengthMinutes) {
+      const endDate = new Date(now.getTime() + organization.settings.sessionDefaultLengthMinutes * 60000)
+      const endYear = endDate.getFullYear()
+      const endMonth = String(endDate.getMonth() + 1).padStart(2, '0')
+      const endDay = String(endDate.getDate()).padStart(2, '0')
+      const endHours = String(endDate.getHours()).padStart(2, '0')
+      const endMinutes = String(endDate.getMinutes()).padStart(2, '0')
+      
+      setEndTime(`${endYear}-${endMonth}-${endDay}T${endHours}:${endMinutes}`)
+    }
+  }, [organization])
 
   // Handle click outside dropdown
   useEffect(() => {
@@ -106,6 +119,24 @@ export function AddSessionPage() {
     setSearchQuery('')
     setFilteredMembers(members)
     inputRef.current?.focus()
+  }
+
+  function handleStartTimeChange(newStartTime: string) {
+    setStartTime(newStartTime)
+    
+    // Automatically update end time based on session default length
+    if (newStartTime && organization?.settings?.sessionDefaultLengthMinutes) {
+      const startDate = new Date(newStartTime)
+      const endDate = new Date(startDate.getTime() + organization.settings.sessionDefaultLengthMinutes * 60000)
+      
+      const endYear = endDate.getFullYear()
+      const endMonth = String(endDate.getMonth() + 1).padStart(2, '0')
+      const endDay = String(endDate.getDate()).padStart(2, '0')
+      const endHours = String(endDate.getHours()).padStart(2, '0')
+      const endMinutes = String(endDate.getMinutes()).padStart(2, '0')
+      
+      setEndTime(`${endYear}-${endMonth}-${endDay}T${endHours}:${endMinutes}`)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -429,69 +460,72 @@ export function AddSessionPage() {
                 </Heading>
 
                 <Stack gap={4}>
-                  <Stack gap={2}>
-                    <Text
-                      fontSize="sm"
-                      fontWeight="500"
-                      color="accent.700"
-                      _dark={{ color: "accent.300" }}
-                      fontFamily="body"
-                    >
-                      Start Time *
-                    </Text>
+                  <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+                    <Stack gap={2}>
+                      <Text
+                        fontSize="sm"
+                        fontWeight="500"
+                        color="accent.700"
+                        _dark={{ color: "accent.300" }}
+                        fontFamily="body"
+                      >
+                        Start Time *
+                      </Text>
 
-                    <Input
-                      type="datetime-local"
-                      required
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      borderColor="accent.200"
-                      _dark={{ borderColor: "accent.700" }}
-                      _hover={{ borderColor: "brand.400" }}
-                      _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
-                      borderRadius="md"
-                      fontFamily="body"
-                      disabled={isLoading}
-                      px={3}
-                      py={2}
-                    />
-                  </Stack>
+                      <Input
+                        type="datetime-local"
+                        required
+                        value={startTime}
+                        onChange={(e) => handleStartTimeChange(e.target.value)}
+                        borderColor="accent.200"
+                        _dark={{ borderColor: "accent.700" }}
+                        _hover={{ borderColor: "brand.400" }}
+                        _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
+                        borderRadius="md"
+                        fontFamily="body"
+                        disabled={isLoading}
+                        px={5}
+                        py={3}
+                      />
+                    </Stack>
 
-                  <Stack gap={2}>
-                    <Text
-                      fontSize="sm"
-                      fontWeight="500"
-                      color="accent.700"
-                      _dark={{ color: "accent.300" }}
-                      fontFamily="body"
-                    >
-                      End Time (Optional)
-                    </Text>
+                    <Stack gap={2}>
+                      <Text
+                        fontSize="sm"
+                        fontWeight="500"
+                        color="accent.700"
+                        _dark={{ color: "accent.300" }}
+                        fontFamily="body"
+                      >
+                        End Time *
+                      </Text>
 
-                    <Input
-                      type="datetime-local"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      borderColor="accent.200"
-                      _dark={{ borderColor: "accent.700" }}
-                      _hover={{ borderColor: "brand.400" }}
-                      _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
-                      borderRadius="md"
-                      fontFamily="body"
-                      disabled={isLoading}
-                      px={3}
-                      py={2}
-                    />
+                      <Input
+                        type="datetime-local"
+                        required
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        borderColor="accent.200"
+                        _dark={{ borderColor: "accent.700" }}
+                        _hover={{ borderColor: "brand.400" }}
+                        _focus={{ borderColor: "brand.400", boxShadow: "0 0 0 1px #4CA9FF" }}
+                        borderRadius="md"
+                        fontFamily="body"
+                        disabled={isLoading}
+                        px={5}
+                        py={3}
+                      />
+                    </Stack>
+                  </SimpleGrid>
 
-                    <Text
-                      fontSize="xs"
-                      color="accent.600"
-                      _dark={{ color: "accent.400" }}
-                      fontFamily="body"
-                    >
-                      Leave empty if session is ongoing
-                    </Text>
-                  </Stack>
+                  <Text
+                    fontSize="xs"
+                    color="accent.600"
+                    _dark={{ color: "accent.400" }}
+                    fontFamily="body"
+                  >
+                    End time is automatically calculated based on your organization's default session length ({organization?.settings?.sessionDefaultLengthMinutes || 60} minutes). You can adjust it manually if needed.
+                  </Text>
 
                   <Stack gap={2}>
                     <Text
