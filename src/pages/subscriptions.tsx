@@ -7,6 +7,7 @@ import { authService } from '@/services/auth.service'
 import { subscriptionService } from '@/services/subscription.service'
 import { AppHeader } from '@/components/app-header'
 import { DeleteSubscriptionModal } from '@/components/delete-subscription-modal'
+import { formatCurrency } from '@/utils/currency'
 import type { Subscription } from '@/types/subscription'
 
 export function SubscriptionsPage() {
@@ -43,11 +44,8 @@ export function SubscriptionsPage() {
     }
   }
 
-  function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
+  function formatCurrencyAmount(amount: number): string {
+    return formatCurrency(amount, organization?.settings?.currency || 'VND')
   }
 
   function formatDate(dateString: string): string {
@@ -212,7 +210,7 @@ export function SubscriptionsPage() {
                   color="success.600"
                   _dark={{ color: "success.400" }}
                 >
-                  {formatCurrency(stats.totalAmount)}
+                  {formatCurrencyAmount(stats.totalAmount)}
                 </Heading>
               </Stack>
             </Box>
@@ -346,7 +344,7 @@ export function SubscriptionsPage() {
                           fontSize="sm"
                           fontWeight="600"
                         >
-                          {formatCurrency(subscription.amount)}
+                          {formatCurrencyAmount(subscription.amount)}
                         </Badge>
 
                         <Badge

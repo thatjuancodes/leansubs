@@ -10,6 +10,7 @@ import { AddSessionPage } from '@/pages/add-session'
 import { SessionsPage } from '@/pages/sessions'
 import { AddSubscriptionPage } from '@/pages/add-subscription'
 import { SubscriptionsPage } from '@/pages/subscriptions'
+import { OrganizationSettingsPage } from '@/pages/organization-settings'
 import { ProtectedRoute } from '@/components/protected-route'
 
 function App() {
@@ -80,6 +81,14 @@ function App() {
           element={
             <ProtectedRoute>
               <SubscriptionsPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/settings" 
+          element={
+            <ProtectedRoute>
+              <OrganizationSettingsPage />
             </ProtectedRoute>
           } 
         />

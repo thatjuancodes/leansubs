@@ -1,6 +1,6 @@
 import { Box, Container, Heading, Text, Button, Stack, HStack } from '@chakra-ui/react'
 import { MenuRoot, MenuTrigger, MenuContent, MenuItem, MenuPositioner } from '@chakra-ui/react'
-import { LuUser, LuLogOut, LuChevronDown } from 'react-icons/lu'
+import { LuUser, LuLogOut, LuChevronDown, LuSettings } from 'react-icons/lu'
 import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
 
@@ -107,6 +107,37 @@ export function AppHeader() {
                         _dark={{ color: "accent.100" }}
                       >
                         Profile
+                      </Text>
+                    </HStack>
+                  </MenuItem>
+
+                  <MenuItem
+                    value="settings"
+                    onClick={() => navigate('/settings')}
+                    px={4}
+                    py={3}
+                    cursor="pointer"
+                    _hover={{ 
+                      bg: "accent.50",
+                      _dark: { bg: "accent.700" }
+                    }}
+                    transition="all 0.2s"
+                  >
+                    <HStack gap={3}>
+                      <Box 
+                        as={LuSettings} 
+                        fontSize="lg"
+                        color="accent.500"
+                        _dark={{ color: "accent.400" }}
+                      />
+                      <Text
+                        fontSize="md"
+                        fontWeight="500"
+                        fontFamily="body"
+                        color="accent.800"
+                        _dark={{ color: "accent.100" }}
+                      >
+                        Settings
                       </Text>
                     </HStack>
                   </MenuItem>

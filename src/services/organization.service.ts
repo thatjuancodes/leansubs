@@ -1,4 +1,4 @@
-import type { Organization, UserOrganization, CreateOrganizationInput } from '@/types/organization'
+import type { Organization, UserOrganization, CreateOrganizationInput, UpdateOrganizationSettingsInput } from '@/types/organization'
 
 /**
  * Organization Service
@@ -39,6 +39,10 @@ class OrganizationService {
       name: input.name,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      settings: {
+        currency: 'VND',
+        sessionDefaultLengthMinutes: 60,
+      },
     }
 
     // Save organization
@@ -117,7 +121,25 @@ class OrganizationService {
     await delay()
 
     const organizations = this.getOrganizations()
-    return organizations.find(org => org.id === orgId) || null
+    const org = organizations.find(org => org.id === orgId)
+    
+    if (!org) return null
+    
+    // Migrate old organizations to have settings
+    if (!org.settings) {
+      org.settings = {
+        currency: 'VND',
+        sessionDefaultLengthMinutes: 60,
+      }
+      // Save the migrated organization
+      const index = organizations.findIndex(o => o.id === orgId)
+      if (index !== -1) {
+        organizations[index] = org
+        localStorage.setItem(this.ORGANIZATIONS_KEY, JSON.stringify(organizations))
+      }
+    }
+    
+    return org
   }
 
   /**
@@ -164,6 +186,38 @@ class OrganizationService {
     organizations[index] = {
       ...organizations[index],
       ...updates,
+      updatedAt: new Date().toISOString(),
+    }
+
+    localStorage.setItem(this.ORGANIZATIONS_KEY, JSON.stringify(organizations))
+    return organizations[index]
+  }
+
+  /**
+   * Update organization settings
+   * 
+   * Supabase migration:
+   * const { data } = await supabase
+   *   .from('organizations')
+   *   .update({ settings, updated_at: new Date().toISOString() })
+   *   .eq('id', orgId)
+   */
+  async updateSettings(orgId: string, updates: UpdateOrganizationSettingsInput): Promise<Organization> {
+    await delay()
+
+    const organizations = this.getOrganizations()
+    const index = organizations.findIndex(org => org.id === orgId)
+
+    if (index === -1) {
+      throw new Error('Organization not found')
+    }
+
+    organizations[index] = {
+      ...organizations[index],
+      settings: {
+        ...organizations[index].settings,
+        ...updates,
+      },
       updatedAt: new Date().toISOString(),
     }
 

@@ -185,7 +185,26 @@ class AuthService {
     if (!orgJson) return null
 
     try {
-      return JSON.parse(orgJson)
+      const stored = JSON.parse(orgJson)
+      
+      // Check if we have a UserOrganization object instead of Organization (migration)
+      if (stored.organizationId && !stored.id) {
+        console.warn('Migrating UserOrganization to Organization object')
+        // Fetch the actual organization
+        const orgs = JSON.parse(localStorage.getItem('leansubs_organizations') || '[]')
+        const actualOrg = orgs.find((o: Organization) => o.id === stored.organizationId)
+        
+        if (actualOrg) {
+          // Update storage with the correct organization
+          localStorage.setItem(this.CURRENT_ORG_KEY, JSON.stringify(actualOrg))
+          return actualOrg
+        }
+        
+        // If organization not found, return null and let user re-login
+        return null
+      }
+      
+      return stored
     } catch {
       return null
     }
