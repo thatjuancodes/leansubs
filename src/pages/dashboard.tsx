@@ -57,26 +57,15 @@ export function DashboardPage() {
     <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Welcome Section */}
-          <Stack gap={2}>
-            <Heading
-              fontSize="3xl"
-              fontWeight="700"
-              fontFamily="heading"
-              color="accent.800"
-              _dark={{ color: "accent.100" }}
-            >
-              Welcome back, {user?.name}!
-            </Heading>
-
-            <Text
-              fontSize="lg"
-              color="accent.600"
-              _dark={{ color: "accent.400" }}
-              fontFamily="body"
-            >
-              {organization?.name || 'Organization'} Dashboard
-            </Text>
-          </Stack>
+          <Heading
+            fontSize="3xl"
+            fontWeight="700"
+            fontFamily="heading"
+            color="accent.800"
+            _dark={{ color: "accent.100" }}
+          >
+            Welcome back, {user?.name}!
+          </Heading>
 
           {/* Overview Cards */}
           <Stack gap={4}>
@@ -90,9 +79,9 @@ export function DashboardPage() {
               Overview
             </Heading>
 
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+            <SimpleGrid columns={{ base: 3, md: 3 }} gap={{ base: 3, md: 6 }}>
               <StatCard
-                title="Total Members"
+                title="Members"
                 value={isLoading ? '...' : stats.total.toString()}
                 badge={`${stats.active} active • ${stats.paused} paused`}
                 badgeColor="brand.400"
@@ -100,7 +89,7 @@ export function DashboardPage() {
               />
 
               <StatCard
-                title="Total Sessions"
+                title="Sessions"
                 value={isLoading ? '...' : sessionStats.total.toString()}
                 badge={`${sessionStats.totalCreditsUsed} credits used`}
                 badgeColor="secondary.500"
@@ -278,7 +267,7 @@ function StatCard({ title, value, badge, badgeColor, onClick }: StatCardProps) {
     <Box
       bg="white"
       _dark={{ bg: "accent.800" }}
-      p={6}
+      p={{ base: 3, md: 6 }}
       borderRadius="md"
       border="subtle"
       shadow="base"
@@ -291,21 +280,23 @@ function StatCard({ title, value, badge, badgeColor, onClick }: StatCardProps) {
       } : undefined}
       transition="all 0.2s ease-in-out"
     >
-      <Stack gap={3}>
+      <Stack gap={{ base: 1, md: 3 }} align={{ base: "center", md: "flex-start" }}>
         <Text
-          fontSize="sm"
-          fontWeight="500"
+          fontSize={{ base: "2xs", md: "sm" }}
+          fontWeight="700"
           color="accent.600"
           _dark={{ color: "accent.400" }}
           fontFamily="body"
           textTransform="uppercase"
           letterSpacing="wide"
+          noOfLines={2}
+          textAlign={{ base: "center", md: "left" }}
         >
           {title}
         </Text>
 
         <Heading
-          fontSize="4xl"
+          fontSize={{ base: "lg", md: "4xl" }}
           fontWeight="700"
           fontFamily="heading"
           color="accent.800"
@@ -322,6 +313,7 @@ function StatCard({ title, value, badge, badgeColor, onClick }: StatCardProps) {
           borderRadius="md"
           fontSize="xs"
           w="fit-content"
+          display={{ base: "none", md: "block" }}
         >
           {badge}
         </Badge>

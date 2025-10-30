@@ -106,47 +106,12 @@ export function AppSidebarLayout({ children }: AppSidebarLayoutProps) {
     return (
       <VStack gap={0} align="stretch" h="full">
         {/* Brand Logo & Organization with Collapse Button (Desktop Only) */}
-        <Box p={isSidebarCollapsed && !isMobile ? 4 : 6} pb={4}>
-          {isSidebarCollapsed && !isMobile ? (
-            <VStack gap={3}>
-              <Heading
-                fontSize="xl"
-                fontWeight="700"
-                bgGradient="to-r"
-                gradientFrom="brand.400"
-                gradientTo="secondary.500"
-                bgClip="text"
-                fontFamily="heading"
-                cursor="pointer"
-                onClick={() => {
-                  navigate('/dashboard')
-                  setIsMobileMenuOpen(false)
-                }}
-                textAlign="center"
-              >
-                LS
-              </Heading>
-
-              <IconButton
-                aria-label="Expand sidebar"
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsSidebarCollapsed(false)}
-                color="accent.600"
-                _dark={{ color: "accent.400" }}
-                _hover={{
-                  bg: "accent.100",
-                  _dark: { bg: "accent.700" }
-                }}
-              >
-                <Box as={LuMenu} fontSize="md" />
-              </IconButton>
-            </VStack>
-          ) : (
-            <VStack gap={2} align="stretch">
-              <HStack justify="space-between" align="center">
+        {!isMobile && (
+          <Box p={isSidebarCollapsed ? 4 : 6} pb={4}>
+            {isSidebarCollapsed ? (
+              <VStack gap={3}>
                 <Heading
-                  fontSize="2xl"
+                  fontSize="xl"
                   fontWeight="700"
                   bgGradient="to-r"
                   gradientFrom="brand.400"
@@ -158,12 +123,46 @@ export function AppSidebarLayout({ children }: AppSidebarLayoutProps) {
                     navigate('/dashboard')
                     setIsMobileMenuOpen(false)
                   }}
+                  textAlign="center"
                 >
-                  LeanSubs
+                  LS
                 </Heading>
 
-                {/* Collapse button only on desktop */}
-                {!isMobile && (
+                <IconButton
+                  aria-label="Expand sidebar"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsSidebarCollapsed(false)}
+                  color="accent.600"
+                  _dark={{ color: "accent.400" }}
+                  _hover={{
+                    bg: "accent.100",
+                    _dark: { bg: "accent.700" }
+                  }}
+                >
+                  <Box as={LuMenu} fontSize="md" />
+                </IconButton>
+              </VStack>
+            ) : (
+              <VStack gap={2} align="stretch">
+                <HStack justify="space-between" align="center">
+                  <Heading
+                    fontSize="2xl"
+                    fontWeight="700"
+                    bgGradient="to-r"
+                    gradientFrom="brand.400"
+                    gradientTo="secondary.500"
+                    bgClip="text"
+                    fontFamily="heading"
+                    cursor="pointer"
+                    onClick={() => {
+                      navigate('/dashboard')
+                      setIsMobileMenuOpen(false)
+                    }}
+                  >
+                    LeanSubs
+                  </Heading>
+
                   <IconButton
                     aria-label="Collapse sidebar"
                     variant="ghost"
@@ -178,24 +177,24 @@ export function AppSidebarLayout({ children }: AppSidebarLayoutProps) {
                   >
                     <Box as={LuChevronLeft} fontSize="md" />
                   </IconButton>
-                )}
-              </HStack>
+                </HStack>
 
-              {organization && (
-                <Text
-                  fontSize="sm"
-                  fontWeight="500"
-                  color="accent.600"
-                  _dark={{ color: "accent.400" }}
-                  fontFamily="body"
-                  noOfLines={1}
-                >
-                  {organization.name}
-                </Text>
-              )}
-            </VStack>
-          )}
-        </Box>
+                {organization && (
+                  <Text
+                    fontSize="sm"
+                    fontWeight="500"
+                    color="accent.600"
+                    _dark={{ color: "accent.400" }}
+                    fontFamily="body"
+                    noOfLines={1}
+                  >
+                    {organization.name}
+                  </Text>
+                )}
+              </VStack>
+            )}
+          </Box>
+        )}
 
         {/* Main Navigation */}
         <VStack gap={1} py={2} align="stretch" flex={1}>
@@ -440,6 +439,8 @@ export function AppSidebarLayout({ children }: AppSidebarLayoutProps) {
               gradientTo="secondary.500"
               bgClip="text"
               fontFamily="heading"
+              cursor="pointer"
+              onClick={() => navigate('/dashboard')}
             >
               LeanSubs
             </Heading>

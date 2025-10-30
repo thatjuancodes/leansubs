@@ -144,30 +144,32 @@ export function SubscriptionsPage() {
           </Stack>
 
           {/* Stats Cards */}
-          <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+          <SimpleGrid columns={{ base: 3, md: 3 }} gap={{ base: 3, md: 6 }}>
             <Box
               bg="white"
               _dark={{ bg: "accent.800" }}
-              p={6}
+              p={{ base: 3, md: 6 }}
               borderRadius="md"
               border="subtle"
               shadow="base"
             >
-              <Stack gap={2}>
+              <Stack gap={{ base: 1, md: 3 }} align={{ base: "center", md: "flex-start" }}>
                 <Text
-                  fontSize="sm"
-                  fontWeight="500"
+                  fontSize={{ base: "2xs", md: "sm" }}
+                  fontWeight="700"
                   color="accent.600"
                   _dark={{ color: "accent.400" }}
                   fontFamily="body"
                   textTransform="uppercase"
                   letterSpacing="wide"
+                  noOfLines={2}
+                  textAlign={{ base: "center", md: "left" }}
                 >
                   Total Subscriptions
                 </Text>
 
                 <Heading
-                  fontSize="4xl"
+                  fontSize={{ base: "lg", md: "4xl" }}
                   fontWeight="700"
                   fontFamily="heading"
                   color="accent.800"
@@ -181,26 +183,28 @@ export function SubscriptionsPage() {
             <Box
               bg="white"
               _dark={{ bg: "accent.800" }}
-              p={6}
+              p={{ base: 3, md: 6 }}
               borderRadius="md"
               border="subtle"
               shadow="base"
             >
-              <Stack gap={2}>
+              <Stack gap={{ base: 1, md: 3 }} align={{ base: "center", md: "flex-start" }}>
                 <Text
-                  fontSize="sm"
-                  fontWeight="500"
+                  fontSize={{ base: "2xs", md: "sm" }}
+                  fontWeight="700"
                   color="accent.600"
                   _dark={{ color: "accent.400" }}
                   fontFamily="body"
                   textTransform="uppercase"
                   letterSpacing="wide"
+                  noOfLines={2}
+                  textAlign={{ base: "center", md: "left" }}
                 >
                   Total Revenue
                 </Text>
 
                 <Heading
-                  fontSize="4xl"
+                  fontSize={{ base: "lg", md: "4xl" }}
                   fontWeight="700"
                   fontFamily="heading"
                   color="success.600"
@@ -214,26 +218,28 @@ export function SubscriptionsPage() {
             <Box
               bg="white"
               _dark={{ bg: "accent.800" }}
-              p={6}
+              p={{ base: 3, md: 6 }}
               borderRadius="md"
               border="subtle"
               shadow="base"
             >
-              <Stack gap={2}>
+              <Stack gap={{ base: 1, md: 3 }} align={{ base: "center", md: "flex-start" }}>
                 <Text
-                  fontSize="sm"
-                  fontWeight="500"
+                  fontSize={{ base: "2xs", md: "sm" }}
+                  fontWeight="700"
                   color="accent.600"
                   _dark={{ color: "accent.400" }}
                   fontFamily="body"
                   textTransform="uppercase"
                   letterSpacing="wide"
+                  noOfLines={2}
+                  textAlign={{ base: "center", md: "left" }}
                 >
                   Total Credits Sold
                 </Text>
 
                 <Heading
-                  fontSize="4xl"
+                  fontSize={{ base: "lg", md: "4xl" }}
                   fontWeight="700"
                   fontFamily="heading"
                   color="brand.400"
