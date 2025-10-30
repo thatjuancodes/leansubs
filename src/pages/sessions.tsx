@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { sessionService } from '@/services/session.service'
 import { EditSessionDrawer } from '@/components/edit-session-drawer'
-import { AppHeader } from '@/components/app-header'
 import type { SessionWithMember } from '@/types/session'
 
 export function SessionsPage() {
@@ -147,10 +146,7 @@ export function SessionsPage() {
   })
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
+    <>
       <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Page Header */}
@@ -428,6 +424,6 @@ export function SessionsPage() {
         onClose={handleDrawerClose}
         onUpdate={handleSessionUpdate}
       />
-    </Box>
+    </>
   )
 }

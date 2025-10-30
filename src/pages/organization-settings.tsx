@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { organizationService } from '@/services/organization.service'
 import { CURRENCIES, type CurrencyCode } from '@/types/organization'
-import { AppHeader } from '@/components/app-header'
 import { formatCurrency } from '@/utils/currency'
 
 export function OrganizationSettingsPage() {
@@ -82,9 +81,7 @@ export function OrganizationSettingsPage() {
 
   if (!organization) {
     return (
-      <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-        <AppHeader />
-        <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+      <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
           <Box
             bg="warning.50"
             _dark={{ bg: "warning.900" }}
@@ -104,16 +101,11 @@ export function OrganizationSettingsPage() {
             </Text>
           </Box>
         </Container>
-      </Box>
     )
   }
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
-      <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Page Header */}
           <Stack gap={2}>
@@ -446,7 +438,6 @@ export function OrganizationSettingsPage() {
           </Box>
         </Stack>
       </Container>
-    </Box>
   )
 }
 

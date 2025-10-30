@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { Box, Spinner, Stack, Text } from '@chakra-ui/react'
+import { AppSidebarLayout } from '@/components/app-sidebar-layout'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -39,6 +40,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />
   }
 
-  return <>{children}</>
+  return <AppSidebarLayout>{children}</AppSidebarLayout>
 }
 

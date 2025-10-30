@@ -3,7 +3,6 @@ import { Box, Container, Heading, Text, Button, Stack, Input, SimpleGrid } from 
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { memberService } from '@/services/member.service'
-import { AppHeader } from '@/components/app-header'
 import type { MembershipType, MembershipStatus } from '@/types/member'
 
 export function AddMemberPage() {
@@ -89,11 +88,7 @@ export function AddMemberPage() {
   }
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
-      <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Container maxW="container.lg" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Page Header */}
           <Stack gap={2}>
@@ -538,7 +533,6 @@ export function AddMemberPage() {
           </Box>
         </Stack>
       </Container>
-    </Box>
   )
 }
 

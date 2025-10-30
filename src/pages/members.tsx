@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/auth.context'
 import { memberService } from '@/services/member.service'
 import { EditMemberDrawer } from '@/components/edit-member-drawer'
-import { AppHeader } from '@/components/app-header'
 import type { Member } from '@/types/member'
 
 export function MembersPage() {
@@ -72,10 +71,7 @@ export function MembersPage() {
   )
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
+    <>
       <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Page Header */}
@@ -344,7 +340,7 @@ export function MembersPage() {
         onClose={handleDrawerClose}
         onUpdate={handleMemberUpdate}
       />
-    </Box>
+    </>
   )
 }
 

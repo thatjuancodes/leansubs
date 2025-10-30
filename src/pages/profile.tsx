@@ -3,7 +3,6 @@ import { Button, HStack } from '@chakra-ui/react'
 import { LuUser, LuMail, LuBuilding2, LuCalendar, LuLock } from 'react-icons/lu'
 import { useAuth } from '@/context/auth.context'
 import { useNavigate } from 'react-router-dom'
-import { AppHeader } from '@/components/app-header'
 
 export function ProfilePage() {
   const { user, organization } = useAuth()
@@ -19,11 +18,7 @@ export function ProfilePage() {
   }
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
-      <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Page Header with Back Button */}
           <Stack direction={{ base: "column", md: "row" }} justify="space-between" align={{ base: "stretch", md: "center" }} gap={4}>
@@ -262,7 +257,6 @@ export function ProfilePage() {
           </Card.Root>
         </Stack>
       </Container>
-    </Box>
   )
 }
 

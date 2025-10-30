@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import { memberService } from '@/services/member.service'
 import { sessionService } from '@/services/session.service'
 import { subscriptionService } from '@/services/subscription.service'
-import { AppHeader } from '@/components/app-header'
 
 export function DashboardPage() {
   const { user, organization } = useAuth()
@@ -55,11 +54,7 @@ export function DashboardPage() {
   }, [user, organization])
 
   return (
-    <Box minH="100vh" bg="light" _dark={{ bg: "dark" }}>
-      <AppHeader />
-
-      {/* Main Content */}
-      <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
+    <Container maxW="container.xl" mx="auto" px={{ base: 4, md: 8 }} py={8}>
         <Stack gap={8}>
           {/* Welcome Section */}
           <Stack gap={2}>
@@ -267,7 +262,6 @@ export function DashboardPage() {
           </Stack>
         </Stack>
       </Container>
-    </Box>
   )
 }
 
